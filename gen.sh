@@ -118,7 +118,7 @@ while read -r p || [ "$p" ]; do
       [ "${#p}" -gt $l -a "$diff" -eq 0 ] && {
         p="${p%"$space"}"
       }
-      p="|$p|"
+      p="| $p |"
       unset ex op diff
     }
     # hyperlink injection
