@@ -55,7 +55,6 @@ printf '</head>
 <center>
  ' "${div_class:-div}" # print initial setup
 # next gen header based on mean
-: $((l-=2))
 n=0; header=$(printf '┌'; until [ "$n" -eq "$((l+2))" ]; do   
   printf '─'
   : $((n+=1))
