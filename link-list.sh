@@ -1,8 +1,20 @@
+#!/bin/sh
+ignore_list="$(
+  # shellcheck disable=SC2030
+  # shellcheck disable=SC2031
+  while read -r ignore_line || [ "$ignore_line" ]; do
+    # shellcheck disable=SC2031
+    printf '%s\n' "$ignore_line"
+  done < ./.gen_ignore
+)"
+
 counter=1
-for i in ./*.*; do
+for i in ./*; do
   i="${i#./}"
-  if [ "$i" != "index.html" ] && [ "$i" != "style.css" ] && [ "$i" != "favicon.png" ] && [ "$i" != "gen.sh" ] && [ "$i" != "readme.sh" ] && [ "$i" != "link-list.sh" ]; then
+  case "$ignore_list" in
+    *"$i"*) :;;
+    *) 
     printf '%s:./%s\n' "$counter" "${i#./}"
-    : $((counter+=1))
-  fi
+    : $((counter+=1)) ;;
+  esac
 done

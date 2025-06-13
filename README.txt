@@ -8,7 +8,7 @@ arts
 ://comfort
 ://diagonal-chains
 ://diagonal-chains-v2
-://doddles3
+://doodles3
 ://doodles
 ://dotgrid-25F09-006221.svg
 ://dotgrid-25F09-026526.svg

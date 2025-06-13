@@ -5,7 +5,7 @@
 5:./comfort.png
 6:./diagonal-chains.png
 7:./diagonal-chains-v2.png
-8:./doddles3.png
+8:./doodles3.png
 9:./doodles.png
 10:./dotgrid-25F09-006221.svg
 11:./dotgrid-25F09-026526.svg
