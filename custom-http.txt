@@ -6,5 +6,7 @@ div_class="div"
 # addon is used by ./projects-gen
 license=""
 hyperlink="://"
-linkfile="link-list"
+linkfile="link-list.txt"
 css="style.css"
+favicon="favicon.png"
+domain="a.transcendent.ink"
