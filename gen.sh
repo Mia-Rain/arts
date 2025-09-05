@@ -7,6 +7,16 @@ bail() {
   unset ERR
   "${ERR:?$1}" || exit "${3:-1}"
 }
+ignore_list="$(
+  # shellcheck disable=SC2030
+  # shellcheck disable=SC2031
+  while read -r ignore_line || [ "$ignore_line" ]; do
+    # shellcheck disable=SC2031
+    printf '%s\n' "$ignore_line"
+  done < ./.gen_ignore
+)"
+
+
 [ "$domain" ] || domain="transcendent.ink"
 [ "$license" ] || license="Licensed under Unlicense ~ Set it Free."
 [ "$stack" ] || stack="ssh"
@@ -54,6 +64,7 @@ printf '</head>
 <font>
 <pre>
 <center>
+<div class="grid-container">
  ' "${div_class:-div}" # print initial setup
 ### next gen header based on mean
 # lmao once I code do math
@@ -71,21 +82,21 @@ n=0; footer=$(printf '└'; until [ "$n" -eq "$((l+2))" ]; do
 done; printf '┘')
 echo
 link_num=1
-while read -r p || [ "$p" ]; do
+line_counter=0; while read -r p || [ "$p" ]; do
   unset op
   # injection is used for hyperlink support
   # hyperlink support
 
   #[ "$((${#p}%2))" = 0 -a "${#p}" != 0 ] && bail "LINE IS TOO LONG${nl}LINE IS:$nl$p${nl}LENGTH IS ${#p}" 
   # note that if lines and title are not odd that things will break
-  [ "$p" != "---" ] && {
+  if [ "$p" != "---" ]; then
     [ "${p##*-- }" = "$p" -a "${#p}" -ne 0 ] && name="$p" 
     p="${p##*-- }";
     [ "$p" = "$name" ] && {
-      np="$nl $mid"
+      np="$nl"
     } || unset np
       op="${#p}"
-      [ "${p##*"${hyperlink}"}" != "$p" -a -e "${linkfile:-./link-list}" ] && { 
+      [ "${p##*"${hyperlink}"}" != "$p" -a -e "${linkfile:-./link-list.txt}" ] && { 
         while read -r c || [ "$c" ]; do
           [ "${c%%:*}" -eq "$link_num" ] && {
             clink="${c#*:}"
@@ -93,10 +104,19 @@ while read -r p || [ "$p" ]; do
           }
         done < "$linkfile"
         for i in ${p}; do
+	  case "$ignore_list" in
+	    *"${i#./}"*) break ;;
+	  esac
           case $i in
             (*"$hyperlink"*)
-            [ "$clink" ] && p="${p%%"${hyperlink}"*}<a href=\"$clink\">${i#*"${hyperlink}"}</a>${p##*"${hyperlink}"*}"
-            unset clink
+            if [ "$clink" ]; then
+	      _suffix="${clink##*.}"
+	      case "$_suffix" in
+	        *"png"*|*"jpg"*|*"svg"*) p="<div class=\"item\">${p%%"${hyperlink}"*}<img src=\"$clink\" alt=\"${i#*"${hyperlink}"}\" class=\"imgs\"></div>" ;;
+		*) p="<div class=\"item\">${p%%"${hyperlink}"*}<a href=\"$clink\">${i#*"${hyperlink}"}</a></div>";;
+	      esac
+	    fi
+	    unset clink
             break
             ;;
         esac
@@ -119,17 +139,25 @@ while read -r p || [ "$p" ]; do
       [ "${#p}" -gt $l -a "$diff" -eq 0 ] && {
         p="${p%"$space"}"
       }
-      p="│ $p │"
+      p="$p"
       unset ex op diff
     }
     # hyperlink injection
-    printf '%s\n' " $p$np"
-  } || printf '%s\n' " $footer"
+    if [ "$line_counter" -le 2 ]; then
+      p="│ $p │"
+    fi
+    printf '%s\n' " $p"
+  elif [ "$line_counter" -eq 0 ]; then
+    printf '%s\n' " $header"
+  else 
+    [ "$line_counter" -lt 5 ] && printf '%s\n' " $footer"
+  fi
+  : $((line_counter+=1))
 done << EOF
 $in
 EOF
 [ "$foot" ] || printf '
-
+</div>
 </center>
 </pre>
 </font>
