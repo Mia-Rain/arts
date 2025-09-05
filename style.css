@@ -47,7 +47,6 @@ pre {
 }
 .container > div {
   background-color: transparent;
-  border: 5x dotted black;
   padding: 10px;
   font-size: 30px;
   text-align: center;
@@ -59,7 +58,6 @@ pre {
   grid-auto-flow: column row;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 300px; /* height of one row */
-  border: 15px dotted black;
 }
 
 .grid-container > .item:nth-child(6n+1),
