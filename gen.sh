@@ -64,7 +64,6 @@ printf '</head>
 <font>
 <pre>
 <center>
-<div class="grid-container">
  ' "${div_class:-div}" # print initial setup
 ### next gen header based on mean
 # lmao once I code do math
@@ -112,8 +111,8 @@ line_counter=0; while read -r p || [ "$p" ]; do
             if [ "$clink" ]; then
 	      _suffix="${clink##*.}"
 	      case "$_suffix" in
-	        *"png"*|*"jpg"*|*"svg"*) p="<div class=\"item\">${p%%"${hyperlink}"*}<img src=\"$clink\" alt=\"${i#*"${hyperlink}"}\" class=\"imgs\"></div>" ;;
-		*) p="<div class=\"item\">${p%%"${hyperlink}"*}<a href=\"$clink\">${i#*"${hyperlink}"}</a></div>";;
+	        *"png"*|*"jpg"*|*"svg"*) p="<div class=\"item\">${p%%"${hyperlink}"*}<a href=\"$clink\"><img src=\"$clink\" alt=\"${i#*"${hyperlink}"}\" class=\"imgs\"></a></div>" ;;
+		*) p="<div class=\"item\">${p%%"${hyperlink}"*}<div class=\"table\"><a class=\"text\" href=\"$clink\">${i#*"${hyperlink}"}</a></div></div>";;
 	      esac
 	    fi
 	    unset clink
@@ -150,7 +149,10 @@ line_counter=0; while read -r p || [ "$p" ]; do
   elif [ "$line_counter" -eq 0 ]; then
     printf '%s\n' " $header"
   else 
-    [ "$line_counter" -lt 5 ] && printf '%s\n' " $footer"
+    [ "$line_counter" -lt 5 ] && {
+      printf '%s\n' " $footer"
+      printf '<div class="grid-container">\n'
+    }
   fi
   : $((line_counter+=1))
 done << EOF
