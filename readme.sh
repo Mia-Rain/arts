@@ -12,6 +12,9 @@ ignore_list="$(
 counter=1
 printf '%s\narts\n%s\n' "---" "---"
 for i in ./*; do
+  case "$i" in
+    *"xcf") continue;;
+  esac
   i="${i#./}"
   case "$ignore_list" in
     *"$i"*) :;;
